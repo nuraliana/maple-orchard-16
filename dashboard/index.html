@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Token Radar 01 — Size Curve + Launch Odds</title>
+<link rel="stylesheet" href="app.css"></head>
+<body>
+<header><h1>TOKEN RADAR <span>01</span></h1>
+<p class="sub">Which pre-token protocols are worth farming — priced from their own numbers, not from names.</p>
+<p class="how">How it is priced: <b>TVL alone</b> sets the size curve — age and category offsets were tested and failed the 3-leg guard, so the data dropped them; <b>7-day growth</b> feeds the growth multiplier (guard set it to 0 — the data refused it), and <b>age</b> sets the launch odds. Every number below is refit from the frozen snapshot on every run.</p></header>
+<main>
+<section id="kpi" class="kpi"></section>
+<section class="panel"><h2>Board — 198 pre-token protocols by expected value</h2>
+<div class="controls">
+<label>Category <select id="fCat"></select></label>
+<label>Verdict <select id="fVerd"><option value="">All</option><option value="2">Farm</option><option value="1">Thin</option><option value="0">Skip</option></select></label>
+<label>Min launch odds <select id="fProb"><option value="0">Any</option><option value="0.3">30%</option><option value="0.5">50%</option><option value="0.7">70%</option></select></label>
+<label>Search <input id="fQ" type="text" placeholder="name or slug"></label>
+<span id="count"></span></div>
+<div class="tblwrap"><table id="board"><thead><tr>
+<th data-k="0">Rank</th><th data-k="1">Protocol</th><th data-k="2">Category</th><th data-k="3">Chains</th>
+<th data-k="5">TVL</th><th data-k="6">7d</th><th data-k="7">Age (d)</th><th data-k="9">Launch</th>
+<th data-k="10">Breakeven</th><th data-k="11">Expected value</th><th data-k="12">Local band</th><th data-k="14">Rank range</th>
+<th data-k="16">Slice (floor)</th><th data-k="17">Net farm</th><th data-k="18">Net / hour</th><th data-k="19">Verdict</th>
+</tr></thead><tbody></tbody></table></div>
+<p class="note">Click any row for the full derivation, nearest comps and farm plan. Expected value = conditional value × launch odds (2-year horizon). Implied value is a model claim, not a forecast and not advice.</p></section>
+<section id="detail" class="panel" hidden></section>
+<section class="panel"><h2>How a launch is priced</h2><div id="pricing"></div>
+<h3>Ablation — every factor must earn its place on all three legs (geometric factor-miss, lower is better)</h3>
+<div class="tblwrap"><table id="abl"><thead><tr><th>Model</th><th>Leave-one-out</th><th>Time-split</th><th>Walk-forward</th><th>Decision</th></tr></thead><tbody></tbody></table></div>
+<p class="note">Honest weak legs: <b>age</b> loses to a no-age model on all three legs (3.510 / 3.264 / 3.172 vs 3.547 / 3.433 / 3.472) — age transforms (floor, cap 365/730, log1p, sqrt, linear) were tried and none beat no-age on all three — so the value model now uses no age at all. <b>Offsets</b> lose to dropping them on LOO (3.478 vs 3.510) and time-split (3.188 vs 3.264) and on the 3-leg mean (3.281 vs 3.315), trailing only on walk-forward by 0.005 (3.177 vs 3.172), so the final model uses no offsets either. <b>Growth w=0.3</b> leaves LOO unchanged and worsens the other two legs on the final basis, so the weight is 0. <b>Log chains</b> worsens all three legs on the final basis, so it is dropped. The model still beats both baselines on all three legs.</p>
+<h3>Value vs TVL — fitted size curve with local band</h3><canvas id="scatter" width="880" height="360"></canvas>
+<p class="note">Dots are board rows (expected value vs TVL). The curve is the fitted size curve (TVL only — no age term, no category offset); the shaded band is the local interquartile band. This is a single cross-section, so walk-forward here tests stability across listing cohorts, not pure time.</p></section>
+<section class="panel"><h2>Best farms</h2><div id="bestfarms"></div></section>
+<section class="panel"><h2>Ledger — all 758 protocols, each in exactly one group</h2><div id="ledgerbar" class="stackbar"></div><div id="ledger"></div></section>
+<section class="panel"><h2>Live tokens — already trading (market value, not model value)</h2><p class="note">These 40 are the largest by market cap of the 416 protocols that already record a token. They are shown separately so model value is never mixed with market value.</p><div class="tblwrap"><table id="live"><thead><tr><th>Protocol</th><th>Market cap</th></tr></thead><tbody></tbody></table></div></section>
+<section class="panel"><h2>Methodology</h2><div id="method"></div></section>
+<p id="seal" class="seal"></p>
+</main>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body></html>
